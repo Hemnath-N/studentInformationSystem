@@ -2,15 +2,17 @@ package com.practice.studentInformationSystem.repository;
 
 import com.practice.studentInformationSystem.domain.StudentRequest;
 import com.practice.studentInformationSystem.domain.StudentResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RequiredArgsConstructor
 public class StudentRepository {
 
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public static String FETCH_STUDENT = "SELECT * FROM STUDENT WHERE ID = :id";
     public static String UPDATE_STUDENT = "UPDATE STUDENT SET NAME = :name WHERE ID = :id";

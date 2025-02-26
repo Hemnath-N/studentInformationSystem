@@ -2,6 +2,10 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.3'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'groovy'
+	id 'jacoco'
+	id 'org.barfuin.gradle.jacocolog' version '3.1.0'
+//	id 'checkstyle'
 }
 
 group = 'com.practice'
@@ -24,26 +28,60 @@ repositories {
 }
 
 dependencies {
-	// Spring Boot dependencies
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
-	// Lombok dependencies
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	// Database dependency
 	runtimeOnly 'com.h2database:h2'
 
-	// Test dependencies
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.apache.groovy:groovy-all:4.0.10'
+	testImplementation 'org.spockframework:spock-spring:2.4-M1-groovy-4.0'
+	testImplementation 'org.spockframework:spock-core:2.4-M1-groovy-4.0'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
+sourceSets {
+	test {
+		groovy {
+			srcDirs = ['src/test/groovy']
+		}
+	}
 }
+
+tasks.withType(Test).configureEach {
+	useJUnitPlatform()
+	testLogging {
+		exceptionFormat = 'full'
+	}
+}
+
+tasks.register('integration', Test) {
+	useJUnitPlatform()
+	testClassesDirs = sourceSets.integration.output.classesDirs
+	classpath = sourceSets.integration.runtimeClasspath
+}
+
+test {
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	finalizedBy jacocoTestCoverageVerification
+	dependsOn test
+}
+
+//
+//checkstyle {
+//	toolVersion = "8.44"
+//	config = resources.text.fromFile("$rootDir/checkstyle.xml")
+//}
+//
+//checkstyleMain.source = 'src/main/java'
+//checkstyleMain.include '**/*.java'
