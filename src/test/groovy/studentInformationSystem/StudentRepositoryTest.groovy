@@ -14,10 +14,11 @@ class StudentRepositoryTest extends Specification {
         given:
             def id = 77
         and:
-            1 * namedParameterJdbcTemplate.update(StudentRepository.DELETE_STUDENT, _ as MapSqlParameterSource) >> true
+            1 * namedParameterJdbcTemplate.update(StudentRepository.DELETE_STUDENT, _ as MapSqlParameterSource) >> 1
         when:
-            studentRepository.updateStudent(id)
+            def result = studentRepository.deleteStudent(id)
         then:
+            result == true
             noExceptionThrown()
     }
 }
