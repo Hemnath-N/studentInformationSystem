@@ -2,6 +2,7 @@ package com.practice.studentInformationSystem.repository;
 
 import com.practice.studentInformationSystem.domain.StudentRequest;
 import com.practice.studentInformationSystem.domain.StudentResponse;
+import com.practice.studentInformationSystem.domain.mapper.StudentRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -24,7 +25,7 @@ public class StudentRepository {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("id", id);
         try {
-            return namedParameterJdbcTemplate.queryForObject(FETCH_STUDENT, params, StudentResponse.class);
+            return namedParameterJdbcTemplate.queryForObject(FETCH_STUDENT, params, new StudentRowMapper());
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
